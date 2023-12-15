@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Домашняя страница
+    Комментарии
 @endsection
 
 @section('content')

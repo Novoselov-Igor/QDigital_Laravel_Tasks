@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Домашняя страница
+    Профили пользователей
 @endsection
 
 @section('content')
