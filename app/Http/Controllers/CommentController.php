@@ -11,7 +11,7 @@ class CommentController extends Controller
     public function showComments(Request $request)
     {
         $comments = Comment::with('author')
-            ->where('user_id', $request->user()->id)
+            ->where('user_id', $request->input('userId'))
             ->orderBy('updated_at', 'desc')
             ->get();
 
@@ -38,5 +38,10 @@ class CommentController extends Controller
         ]);
 
         return response()->json($comment);
+    }
+
+    public function deleteComment(Request $request)
+    {
+        $comment = Comment::destroy($request->input('commentId'));
     }
 }

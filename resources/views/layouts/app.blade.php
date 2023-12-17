@@ -37,12 +37,17 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <!-- Left Side Of Navbar -->
                 <ul class="navbar-nav me-auto">
-
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('/') }}">К профилям</a>
+                    </li>
                 </ul>
 
                 <!-- Right Side Of Navbar -->
                 <ul class="navbar-nav ms-auto">
                     <!-- Authentication Links -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('home')  }}">Домой</a>
+                    </li>
                     @guest
                         @if (Route::has('login'))
                             <li class="nav-item">

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,12 +15,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('userProfiles');
-});
+Route::get('/', [UserProfileController::class, 'index']);
+Route::get('/profile/{id}', [UserProfileController::class, 'showUserProfile'])->name('profiles.show');
 
 Route::get('/comments', [CommentController::class, 'showComments'])->name('comments.show');
-Route::post('/comments', [CommentController::class, 'addNewComment'])->name('comments.addNew');
+Route::post('/comments/add', [CommentController::class, 'addNewComment'])->name('comments.addNew');
+Route::post('/comments/delete', [CommentController::class, 'deleteComment'])->name('comments.delete');
 
 Auth::routes();
 
