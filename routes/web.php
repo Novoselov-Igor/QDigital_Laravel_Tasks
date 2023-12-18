@@ -19,7 +19,7 @@ Route::get('/', [UserProfileController::class, 'index']);
 Route::get('/profile/{id}', [UserProfileController::class, 'showUserProfile'])->name('profiles.show');
 
 Route::get('/comments', [CommentController::class, 'showComments'])->name('comments.show');
-Route::post('/comments/add', [CommentController::class, 'addNewComment'])->name('comments.addNew');
+Route::post('/comments/add', [CommentController::class, 'addComment'])->name('comments.add');
 Route::post('/comments/delete', [CommentController::class, 'deleteComment'])->name('comments.delete');
 
 Auth::routes();
