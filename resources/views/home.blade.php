@@ -17,34 +17,36 @@
         </div>
         @if(Auth::check())
             <form method="post">
-                <div class="card container-lg col-sm-4">
-                    <div class="card-header bg-white">Написать комментарий</div>
-                    <div class="card-body">
-                        <div class="form-floating mb-3">
-                            <input id="title" type="text" class="form-control @error('title') is-invalid @enderror"
-                                   name="title" value="{{ old('title') }}" placeholder="Заголовок" required
-                                   maxlength="60">
-                            <label for="title">Заголовок</label>
-                            @error('title')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                <div class=" container-lg col-lg-4">
+                    <div class="card">
+                        <div class="card-header bg-white">Написать комментарий</div>
+                        <div class="card-body">
+                            <div class="form-floating mb-3">
+                                <input id="title" type="text" class="form-control @error('title') is-invalid @enderror"
+                                       name="title" value="{{ old('title') }}" placeholder="Заголовок" required
+                                       maxlength="60">
+                                <label for="title">Заголовок</label>
+                                @error('title')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
-                        </div>
-                        <div class="form-floating mb-3">
+                            <div class="form-floating mb-3">
                     <textarea class="form-control @error('text') is-invalid @enderror" id="text" name="text"
                               placeholder="Сообщение" maxlength="255" rows="1" required></textarea>
-                            <label for="text">Сообщение</label>
-                            @error('text')
-                            <div class="invalid-feedback">
-                                {{ $message }}
+                                <label for="text">Сообщение</label>
+                                @error('text')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
-                            @enderror
-                        </div>
-                        <div class="d-flex justify-content-end mx-3">
-                            <button type="submit" class="btn btn-primary">
-                                Отправить
-                            </button>
+                            <div class="d-flex justify-content-end mx-3">
+                                <button type="submit" class="btn btn-primary">
+                                    Отправить
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -167,7 +169,8 @@
         function showComment(comments) {
             $.each(comments, function (index, comment) {
                     $('#comments').append(
-                        '<div class="card container-lg col-sm-4 mt-3">' +
+                        '<div class="container-lg col-lg-4 mt-3">' +
+                        '<div class="card">' +
                         '<div class="card-header bg-white d-flex justify-content-between">' +
                         '<h5>' + comment.title + '</h5>' +
                         '<h5>' + 'Автор: ' + comment.author.name + '</h5>' +
@@ -176,6 +179,7 @@
                         '<p>' + comment.text + '</p>' +
                         '</div>' +
                         '<div id="cardFooter' + index + '" class="card-footer text-end bg-white">' +
+                        '</div>' +
                         '</div>' +
                         '</div>' +
                         '</div>'
