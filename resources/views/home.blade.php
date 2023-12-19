@@ -267,11 +267,13 @@
                         '<div id="cardFooter' + index + '" class="card-footer text-end bg-white">' +
                         '</div>' +
                         '</div>' +
+                        @if(Auth::check())
                         '<button id="replyButton" onclick="replyToComment(\'' + comment.author.name + "'" + ',' + "'" + comment.id + '\')" type="button" class="btn btn-secondary col-lg-3 mx-auto mt-1">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16">' +
                         '<path d="M5.921 11.9 1.353 8.62a.719.719 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"></path>' +
                         '</svg>' +
                         '</button>' +
+                        @endif
                         '</div>'
                     );
                     @if(Auth::check())
