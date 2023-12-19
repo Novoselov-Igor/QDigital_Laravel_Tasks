@@ -9,7 +9,7 @@ class UserProfileController extends Controller
 {
     public function index()
     {
-        $userProfiles = User::select('id', 'name')->get();
+        $userProfiles = User::with('libraryUser', 'libraryAuthor')->select('id', 'name')->get();
         return view('userProfiles', ['users' => $userProfiles]);
     }
 

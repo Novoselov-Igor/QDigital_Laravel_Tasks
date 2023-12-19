@@ -22,6 +22,8 @@ Route::get('/comments', [CommentController::class, 'showComments'])->name('comme
 Route::post('/comments/add', [CommentController::class, 'addComment'])->name('comments.add');
 Route::post('/comments/delete', [CommentController::class, 'deleteComment'])->name('comments.delete');
 
+Route::post('/library/giveAcess', [CommentController::class, 'deleteComment'])->name('library.giveAccess');
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
