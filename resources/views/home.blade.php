@@ -7,19 +7,32 @@
 @section('content')
     <div class="d-flex justify-content-center mx-auto">
         <div class="text-center mb-2 mx-5 w-25">
-            @if(isset($user))
+            @if(!Auth::check())
                 <meta name="user" content="{{ $user->id }}">
                 <div class="card">
                     <div class="card-header bg-white">
-                        <h2>{{ $user->name }}</h2>
+                        <h3>Профиль: {{ $user->name }}</h3>
                     </div>
-                    @if($user->libraryUser)
-                        <div class="card-body bg-white">
+                </div>
+            @elseif(isset($user) && ($user->id !== Auth::user()->id))
+                <meta name="user" content="{{ $user->id }}">
+                <div class="card">
+                    <div class="card-header bg-white">
+                        <h3>Профиль: {{ $user->name }}</h3>
+                    </div>
+                    @if(isset(Auth::user()->library()->where('user_id', Auth::user()->id)->where('author_id', $user->id)->first()->pivot))
+                        <div class="card-body">
+                            <a href="{{ route('library.show', ['author_id' => $user->id] ) }}" class="btn btn-primary">Перейти
+                                в библиотеку</a>
+                        </div>
+                    @endif
+                    @if(!isset($user->library()->where('user_id', $user->id)->where('author_id', Auth::user()->id)->first()->pivot))
+                        <div id="libraryAccessActions" class="card-footer bg-white">
                             <button class="btn btn-primary" onclick="giveAccessToLibrary()">Дать доступ к библиотеке
                             </button>
                         </div>
                     @else
-                        <div class="card-body bg-white">
+                        <div id="libraryAccessActions" class="card-footer bg-white">
                             <button class="btn btn-primary" onclick="removeAccessToLibrary()">Закрыть доступ к
                                 библиотеке
                             </button>
@@ -36,7 +49,8 @@
                         <h5>{{Auth::user()->email}}</h5>
                     </div>
                     <div class="card-footer bg-white">
-                        <button class="btn btn-primary">Перейти в библиотеку</button>
+                        <a href="{{ route('library.show', ['author_id' => Auth::user()->id] ) }}"
+                           class="btn btn-primary">Перейти в библиотеку</a>
                     </div>
                 </div>
             @endif
@@ -297,22 +311,22 @@
                         '<div id="cardFooter' + index + '" class="card-footer text-end bg-white">' +
                         '</div>' +
                         '</div>' +
-                            @if(Auth::check())
-                                '<button id="replyButton" onclick="replyToComment(\'' + comment.author.name + "'" + ',' + "'" + comment.id + '\')" type="button" class="btn btn-secondary col-lg-3 mx-auto mt-1">' +
+                        @if(Auth::check())
+                            '<button id="replyButton" onclick="replyToComment(\'' + comment.author.name + "'" + ',' + "'" + comment.id + '\')" type="button" class="btn btn-secondary col-lg-3 mx-auto mt-1">' +
                         '<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-reply-fill" viewBox="0 0 16 16">' +
                         '<path d="M5.921 11.9 1.353 8.62a.719.719 0 0 1 0-1.238L5.921 4.1A.716.716 0 0 1 7 4.719V6c1.5 0 6 0 7 8-2.5-4.5-7-4-7-4v1.281c0 .56-.606.898-1.079.62z"></path>' +
                         '</svg>' +
                         '</button>' +
-                            @endif
-                                '</div>'
-                    );
-                        @if(Auth::check())
-                        if (comment.author_id === {{ Auth::user()->id }} || '{{ Auth::user()->id }}' === $('meta[name="user"]').attr('content')) {
-                            $('#cardFooter' + index).append(
-                                '<button id="' + comment.id + '" class="btn btn-danger" onclick="deleteComment(this.id)">Удалить</button>'
-                            );
-                        }
                         @endif
+                            '</div>'
+                    );
+                    @if(Auth::check())
+                    if (comment.author_id === {{ Auth::user()->id }} || '{{ Auth::user()->id }}' === $('meta[name="user"]').attr('content')) {
+                        $('#cardFooter' + index).append(
+                            '<button id="' + comment.id + '" class="btn btn-danger" onclick="deleteComment(this.id)">Удалить</button>'
+                        );
+                    }
+                    @endif
                 }
             )
         }
@@ -333,16 +347,12 @@
                     '_token': '{{ csrf_token() }}',
                     'userId': $('meta[name="user"]').attr('content'),
                 },
-                success: function (data) {
-                    showComment(data.comments)
-                    $('#showAllComments').remove()
-                    $('#comments').append(
-                        '<div class="mt-3 d-flex justify-content-center">' +
-                        '<button class="btn border border-2" onclick="showComments()" id="showAllComments">' +
-                        'Скрыть' +
-                        '</button>' +
-                        '</div>'
-                    )
+                success: function () {
+                    var html = '<button class="btn btn-primary" onclick="removeAccessToLibrary()">' +
+                        'Закрыть доступ к библиотеке' +
+                        '</button>';
+
+                    refreshLibraryAccessButtons(html)
                 },
                 error: function (error) {
                     console.log('Ошибка', error)
@@ -351,7 +361,31 @@
         }
 
         function removeAccessToLibrary() {
-            /*Not yet implemented*/
+            $.ajax({
+                type: 'POST',
+                url: '{{ route('library.removeAccess') }}',
+                data: {
+                    '_token': '{{ csrf_token() }}',
+                    'userId': $('meta[name="user"]').attr('content'),
+                },
+                success: function () {
+                    var html = '<button class="btn btn-primary" onclick="giveAccessToLibrary()">' +
+                        'Дать доступ к библиотеке' +
+                        '</button>';
+
+                    refreshLibraryAccessButtons(html)
+                },
+                error: function (error) {
+                    console.log('Ошибка', error)
+                }
+            })
+        }
+
+        function refreshLibraryAccessButtons(html) {
+            var libraryAccessAction = $('#libraryAccessActions');
+
+            libraryAccessAction.empty();
+            libraryAccessAction.append(html);
         }
     </script>
 @endsection

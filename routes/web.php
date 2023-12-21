@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\UserProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,12 @@ Route::get('/comments', [CommentController::class, 'showComments'])->name('comme
 Route::post('/comments/add', [CommentController::class, 'addComment'])->name('comments.add');
 Route::post('/comments/delete', [CommentController::class, 'deleteComment'])->name('comments.delete');
 
-Route::post('/library/giveAcess', [CommentController::class, 'deleteComment'])->name('library.giveAccess');
+Route::post('/library/giveAcess', [LibraryController::class, 'giveAccess'])->name('library.giveAccess');
+Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])->name('library.removeAccess');
+
+Route::middleware('verify.library.access')->group(function () {
+    Route::get('/library/author/{author_id}', [LibraryController::class, 'index'])->name('library.show');
+});
 
 Auth::routes();
 

@@ -44,15 +44,8 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function libraryUser(): BelongsToMany
+    public function library(): BelongsToMany
     {
-        //return $this->belongsToMany(User::class, 'library_access');
-        return $this->belongsToMany(User::class, 'book_access');
-    }
-
-    public function libraryAuthor(): BelongsToMany
-    {
-        //return $this->belongsToMany(User::class, 'library_access');
-        return $this->belongsToMany(User::class, 'book_access');
+        return $this->belongsToMany(User::class, 'library_access')->withPivot('author_id');
     }
 }

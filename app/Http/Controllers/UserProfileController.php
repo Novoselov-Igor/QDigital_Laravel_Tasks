@@ -9,13 +9,13 @@ class UserProfileController extends Controller
 {
     public function index()
     {
-        $userProfiles = User::with('libraryUser', 'libraryAuthor')->select('id', 'name')->get();
+        $userProfiles = User::with('library')->select('id', 'name')->get();
         return view('userProfiles', ['users' => $userProfiles]);
     }
 
     public function showUserProfile($id)
     {
-        $user = User::where('id', $id)->select('id', 'name')->first();
-        return view('home', ['user' => $user]);
+        $user = User::with('library')->findOrFail($id);
+        return view('home', compact('user'));
     }
 }

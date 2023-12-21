@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LibraryController extends Controller
 {
@@ -11,8 +13,15 @@ class LibraryController extends Controller
         return view('bookLibrary');
     }
 
-    public function giveAccess()
+    public function giveAccess(Request $request)
     {
+        $user = User::findOrFail($request->input('userId'));
+        $user->library()->attach($request->input('userId'), ['author_id' => Auth::user()->id]);
+    }
 
+    public function removeAccess(Request $request)
+    {
+        $user = User::findOrFail($request->input('userId'));
+        $user->library()->detach($request->input('author_id'));
     }
 }
