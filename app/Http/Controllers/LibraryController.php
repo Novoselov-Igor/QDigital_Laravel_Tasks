@@ -2,15 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LibraryController extends Controller
 {
-    public function index()
+    public function index($authorId)
     {
-        return view('bookLibrary');
+        $books = Book::where('author_id', $authorId)->get();
+
+        return view('bookLibrary', compact('books', 'authorId'));
     }
 
     public function giveAccess(Request $request)

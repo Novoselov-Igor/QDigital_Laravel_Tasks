@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BookController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\UserProfileController;
@@ -28,6 +29,8 @@ Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])-
 
 Route::middleware('verify.library.access')->group(function () {
     Route::get('/library/author/{authorId}', [LibraryController::class, 'index'])->name('library.show');
+
+    Route::post('/library/author/{authorId}/book/add', [BookController::class, 'add'])->name('book.add');
 });
 
 Auth::routes();

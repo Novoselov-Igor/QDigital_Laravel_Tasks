@@ -42,7 +42,7 @@ class CommentController extends Controller
             'title' => 'required|max:60',
             'text' => 'required|max:255',
             'userId' => 'required|int',
-            'commentId' => 'required|int',
+            'commentId' => 'int',
         ]);
 
         $comment = Comment::create([
@@ -56,6 +56,7 @@ class CommentController extends Controller
         return response()->json($comment);
     }
 
+    //Функция удаления комментариев
     public function delete(Request $request)
     {
         $request->validate([
