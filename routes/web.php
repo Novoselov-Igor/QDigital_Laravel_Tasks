@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [UserProfileController::class, 'index']);
-Route::get('/profile/{id}', [UserProfileController::class, 'showUserProfile'])->name('profiles.show');
+Route::get('/profile/{id}', [UserProfileController::class, 'show'])->name('profiles.show');
 
-Route::get('/comments', [CommentController::class, 'showComments'])->name('comments.show');
-Route::post('/comments/add', [CommentController::class, 'addComment'])->name('comments.add');
-Route::post('/comments/delete', [CommentController::class, 'deleteComment'])->name('comments.delete');
+Route::get('/comments', [CommentController::class, 'show'])->name('comments.show');
+Route::post('/comments/add', [CommentController::class, 'add'])->name('comments.add');
+Route::post('/comments/delete', [CommentController::class, 'delete'])->name('comments.delete');
 
 Route::post('/library/giveAcess', [LibraryController::class, 'giveAccess'])->name('library.giveAccess');
 Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])->name('library.removeAccess');

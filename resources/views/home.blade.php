@@ -222,7 +222,7 @@
                 url: '{{ route('comments.delete') }}',
                 data: {
                     '_token': '{{ csrf_token() }}',
-                    'commentId': id
+                    'commentId': id,
                 },
                 success: function () {
                     showComments()

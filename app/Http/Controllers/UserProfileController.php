@@ -13,7 +13,7 @@ class UserProfileController extends Controller
         return view('userProfiles', ['users' => $userProfiles]);
     }
 
-    public function showUserProfile($id)
+    public function show($id)
     {
         $user = User::with('library')->findOrFail($id);
         return view('home', compact('user'));

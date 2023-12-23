@@ -8,21 +8,30 @@ use Illuminate\Http\Request;
 class CommentController extends Controller
 {
     //Функция отображения комментариев на странице
-    public function showComments(Request $request)
+    public function show(Request $request)
     {
         $comments = Comment::with('author', 'reply')
             ->where('user_id', $request->input('userId'))
             ->orderBy('updated_at', 'desc')
             ->get();
 
+
         if ($comments->count() > 5 && $request->input('type') === 'compact') {
-            return response()->json(['comments' => $comments->take(5), 'size' => 'large']);
+            $response = [
+                'comments' => $comments->take(5),
+                'size' => 'large'
+            ];
+        } else {
+            $response = [
+                'comments' => $comments,
+                'size' => 'small'
+            ];
         }
-        return response()->json(['comments' => $comments, 'size' => 'small']);
+        return response()->json($response);
     }
 
     //Функция добавления новых комментариев
-    public function addComment(Request $request)
+    public function add(Request $request)
     {
         $request->validate([
             'title' => 'required|max:60',
@@ -40,8 +49,13 @@ class CommentController extends Controller
         return response()->json($comment);
     }
 
-    public function deleteComment(Request $request)
+    public function delete(Request $request)
     {
-        Comment::destroy($request->input('commentId'));
+        $comment = Comment::find($request->input('commentId'));
+        $userId = $request->user()->id;
+
+        if ($userId === $comment->author_id || $userId === $comment->user_id) {
+            Comment::destroy($request->input('commentId'));
+        }
     }
 }
