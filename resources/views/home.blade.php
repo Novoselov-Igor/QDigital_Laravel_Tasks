@@ -22,7 +22,7 @@
                     </div>
                     @if(isset(Auth::user()->library()->where('user_id', Auth::user()->id)->where('author_id', $user->id)->first()->pivot))
                         <div class="card-body">
-                            <a href="{{ route('library.show', ['author_id' => $user->id] ) }}" class="btn btn-primary">Перейти
+                            <a href="{{ route('library.show', ['authorId' => $user->id] ) }}" class="btn btn-primary">Перейти
                                 в библиотеку</a>
                         </div>
                     @endif
@@ -49,7 +49,7 @@
                         <h5>{{Auth::user()->email}}</h5>
                     </div>
                     <div class="card-footer bg-white">
-                        <a href="{{ route('library.show', ['author_id' => Auth::user()->id] ) }}"
+                        <a href="{{ route('library.show', ['authorId' => Auth::user()->id] ) }}"
                            class="btn btn-primary">Перейти в библиотеку</a>
                     </div>
                 </div>

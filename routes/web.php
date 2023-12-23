@@ -27,7 +27,7 @@ Route::post('/library/giveAcess', [LibraryController::class, 'giveAccess'])->nam
 Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])->name('library.removeAccess');
 
 Route::middleware('verify.library.access')->group(function () {
-    Route::get('/library/author/{author_id}', [LibraryController::class, 'index'])->name('library.show');
+    Route::get('/library/author/{authorId}', [LibraryController::class, 'index'])->name('library.show');
 });
 
 Auth::routes();

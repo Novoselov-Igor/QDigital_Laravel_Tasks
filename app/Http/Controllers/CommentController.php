@@ -10,6 +10,11 @@ class CommentController extends Controller
     //Функция отображения комментариев на странице
     public function show(Request $request)
     {
+        $request->validate([
+            'userId' => 'required|int',
+            'type' => 'required|string',
+        ]);
+
         $comments = Comment::with('author', 'reply')
             ->where('user_id', $request->input('userId'))
             ->orderBy('updated_at', 'desc')
@@ -36,6 +41,8 @@ class CommentController extends Controller
         $request->validate([
             'title' => 'required|max:60',
             'text' => 'required|max:255',
+            'userId' => 'required|int',
+            'commentId' => 'required|int',
         ]);
 
         $comment = Comment::create([
@@ -51,6 +58,10 @@ class CommentController extends Controller
 
     public function delete(Request $request)
     {
+        $request->validate([
+            'commentId' => 'required|int'
+        ]);
+
         $comment = Comment::find($request->input('commentId'));
         $userId = $request->user()->id;
 

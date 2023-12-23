@@ -17,7 +17,7 @@ class VerifyLibraryAccess
     public function handle(Request $request, Closure $next): Response
     {
         if (Auth::check()
-            && ($request->route('author_id') === '' . Auth::user()->id || isset(
+            && ($request->route('authorId') === '' . Auth::user()->id || isset(
                     Auth::user()->library()
                         ->where('user_id', Auth::user()->id)
                         ->where('author_id', $request->route('author_id'))
