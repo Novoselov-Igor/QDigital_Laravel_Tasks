@@ -20,7 +20,7 @@ class VerifyLibraryAccess
             && ($request->route('authorId') === '' . Auth::user()->id || isset(
                     Auth::user()->library()
                         ->where('user_id', Auth::user()->id)
-                        ->where('author_id', $request->route('author_id'))
+                        ->where('author_id', $request->route('authorId'))
                         ->first()->pivot)
             )) {
             return $next($request);
