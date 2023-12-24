@@ -34,6 +34,11 @@ Route::middleware('verify.library.access')->group(function () {
 
     Route::post('/library/author/{authorId}/book/show', [BookController::class, 'show'])->name('book.show');
     Route::post('/library/author/{authorId}/book/add', [BookController::class, 'add'])->name('book.add');
+    Route::post('/library/author/{authorId}/book/change', [BookController::class, 'change'])->name('book.change');
+    Route::post('/library/author/{authorId}/book/delete', [BookController::class, 'delete'])->name('book.delete');
+
+    Route::post('/library/author/{authorId}/book/linkAccess/give', [BookController::class, 'giveLinkAccess'])->name('book.giveLinkAccess');
+    Route::post('/library/author/{authorId}/book/linkAccess/remove', [BookController::class, 'removeLinkAccess'])->name('book.removeLinkAccess');
 });
 
 Auth::routes();

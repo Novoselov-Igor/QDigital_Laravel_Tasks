@@ -66,6 +66,47 @@
                 </div>
             </div>
         @endif
+        <div id="change">
+            <div class="modal modal-xl fade" id="changeBook" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabindex="-1" aria-labelledby="changeBookLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-scrollable">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="changeBookLabel">Изменение книги</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card-body">
+                                <div class="form-floating mb-3">
+                                    <input id="nameChange" type="text"
+                                           class="form-control @error('nameChange') is-invalid @enderror"
+                                           name="name" placeholder="Название" required maxlength="60">
+                                    <label for="name">Название</label>
+                                    @error('nameChange')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                                <div class="form-floating mb-3">
+                                                <textarea class="form-control @error('text') is-invalid @enderror"
+                                                          id="textChange" name="text" placeholder="Содержание"
+                                                          required style="height: 300px"></textarea>
+                                    <label for="textChange">Содержание</label>
+                                    @error('text')
+                                    <div class="invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
+                        <div id="changeBookButton" class="modal-footer">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div id="books" class="row">
             <!-- Здесь будут отображаться книги -->
         </div>
@@ -97,14 +138,20 @@
                                 '<div class="card-body text-center">' +
                                 '<a href="/library/author/{{ $authorId }}/book/' + book.id + '" class="link">Прочитать</a>' +
                                 '</div>' +
-                                '<div class="card-footer bg-white d-flex justify-content-between" id="bookFooter">' +
+                                '<div class="card-footer bg-white d-flex justify-content-between" id="bookFooter' + book.id + '">' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>');
                             if ({{ Auth::user()->id }} === book.author_id) {
-                                $('#bookFooter').append(
-                                    '<button class="btn btn-primary">Изменить</button>' +
-                                    '<button class="btn btn-danger">Удалить</button>'
+                                if (!book.link_access) {
+                                    var accessButton = '<button class="btn btn-secondary mx-3" onclick="giveLinkAccess(' + book.id + ')">Разрешить доступ по ссылке</button>'
+                                } else {
+                                    var accessButton = '<button class="btn btn-secondary mx-3" onclick="removeLinkAccess(' + book.id + ')">Запретить доступ по ссылке</button>'
+                                }
+                                $('#bookFooter' + book.id).append(
+                                    '<button class="btn btn-primary" onclick="addChangeBookModal(' + JSON.stringify(book).replace(/"/g, '&quot;') + ')">Изменить</button>' +
+                                    accessButton +
+                                    '<button class="btn btn-danger" onclick="deleteBook(' + book.id + ')">Удалить</button>'
                                 )
                             }
                         })
@@ -113,6 +160,24 @@
                         console.log('Ошибка', error)
                     }
                 })
+            }
+
+            function addChangeBookModal(book) {
+                var html = '<button type="button" data-bs-dismiss="modal" class="btn btn-primary"' +
+                    ' onclick="changeBook(' + book.id + ')">' +
+                    'Изменить' +
+                    '</button>'
+
+
+                var changeButton = $('#changeBookButton')
+                changeButton.empty();
+                changeButton.append(html);
+
+                $('#nameChange').val(book.name);
+                $('#textChange').val(book.text);
+
+                var modal = new bootstrap.Modal($('#changeBook'));
+                modal.show();
             }
 
             function clearBooks() {
@@ -136,6 +201,80 @@
                         text.val('')
                         name.val('')
 
+                        clearBooks()
+                        showBooks();
+                    },
+                    error: function (error) {
+                        console.log('Ошибка', error)
+                    }
+                })
+            }
+
+            function changeBook(bookId) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('book.change', ['authorId' => $authorId]) }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'bookId': bookId,
+                        'name': $('#nameChange').val(),
+                        'text': $('#textChange').val(),
+                    },
+                    success: function () {
+                        clearBooks()
+                        showBooks();
+                    },
+                    error: function (error) {
+                        console.log('Ошибка', error)
+                    }
+                })
+            }
+
+            function deleteBook(bookId) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('book.delete', ['authorId' => $authorId]) }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'bookId': bookId
+                    },
+                    success: function () {
+                        clearBooks()
+                        showBooks();
+                    },
+                    error: function (error) {
+                        console.log('Ошибка', error)
+                    }
+                })
+            }
+
+            function giveLinkAccess(bookId) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('book.giveLinkAccess', ['authorId' => $authorId]) }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'bookId': bookId
+                    },
+                    success: function () {
+                        clearBooks()
+                        showBooks();
+                    },
+                    error: function (error) {
+                        console.log('Ошибка', error)
+                    }
+                })
+            }
+
+            function removeLinkAccess(bookId) {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('book.removeLinkAccess', ['authorId' => $authorId]) }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'bookId': bookId
+                    },
+                    success: function () {
                         clearBooks()
                         showBooks();
                     },

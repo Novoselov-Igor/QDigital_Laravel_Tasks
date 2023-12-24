@@ -40,4 +40,65 @@ class BookController extends Controller
 
         return response()->json($book);
     }
+
+    public function change(Request $request)
+    {
+        $request->validate([
+            'bookId' => 'required',
+            'name' => 'required|max:60',
+            'text' => 'required',
+        ]);
+
+        $book = Book::find($request->input('bookId'));
+
+        if (!is_null($book) && $book->author_id === $request->user()->id) {
+            $book->name = $request->input('name');
+            $book->text = $request->input('text');
+
+            $book->save();
+        }
+    }
+
+    public function delete(Request $request)
+    {
+        $request->validate([
+            'bookId' => 'required'
+        ]);
+
+        $book = Book::find($request->input('bookId'));
+
+        if (!is_null($book) && $book->author_id === $request->user()->id) {
+            $book->delete();
+        }
+    }
+
+    public function giveLinkAccess(Request $request)
+    {
+        $request->validate([
+            'bookId' => 'required'
+        ]);
+
+        $book = Book::find($request->input('bookId'));
+
+        if (!is_null($book) && $book->author_id === $request->user()->id) {
+            $book->link_access = true;
+
+            $book->save();
+        }
+    }
+
+    public function removeLinkAccess(Request $request)
+    {
+        $request->validate([
+            'bookId' => 'required'
+        ]);
+
+        $book = Book::find($request->input('bookId'));
+
+        if (!is_null($book) && $book->author_id === $request->user()->id) {
+            $book->link_access = false;
+
+            $book->save();
+        }
+    }
 }

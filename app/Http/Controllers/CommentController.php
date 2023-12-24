@@ -67,7 +67,7 @@ class CommentController extends Controller
         $userId = $request->user()->id;
 
         if ($userId === $comment->author_id || $userId === $comment->user_id) {
-            Comment::destroy($request->input('commentId'));
+            $comment->delete();
         }
     }
 }

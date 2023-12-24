@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Book;
 use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,13 +17,16 @@ class VerifyLibraryAccess
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (Auth::check()
-            && ($request->route('authorId') === '' . Auth::user()->id || isset(
-                    Auth::user()->library()
-                        ->where('user_id', Auth::user()->id)
-                        ->where('author_id', $request->route('authorId'))
-                        ->first()->pivot)
-            )) {
+        if ((Auth::check()
+                && ($request->route('authorId') === '' . Auth::user()->id
+                    || isset(
+                        Auth::user()->library()
+                            ->where('user_id', Auth::user()->id)
+                            ->where('author_id', $request->route('authorId'))
+                            ->first()->pivot)))
+            || ($request->route('bookId') !== null
+                && Book::find($request->route('bookId'))->link_access)
+        ) {
             return $next($request);
         }
         return back()->with('accessError', 'У вас нет доступа к этой библиотеке');
