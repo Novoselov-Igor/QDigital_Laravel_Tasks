@@ -28,7 +28,9 @@ Route::post('/library/giveAcess', [LibraryController::class, 'giveAccess'])->nam
 Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])->name('library.removeAccess');
 
 Route::middleware('verify.library.access')->group(function () {
-    Route::get('/library/author/{authorId}', [LibraryController::class, 'index'])->name('library.show');
+    Route::get('/library/author/{authorId}', [LibraryController::class, 'index'])->name('library.goto');
+
+    Route::get('/library/author/{authorId}/book/{bookId}', [BookController::class, 'index'])->name('book.goto');
 
     Route::post('/library/author/{authorId}/book/show', [BookController::class, 'show'])->name('book.show');
     Route::post('/library/author/{authorId}/book/add', [BookController::class, 'add'])->name('book.add');

@@ -95,14 +95,18 @@
                                 '<span>' + book.text + '</span>' +
                                 '</div>' +
                                 '<div class="card-body text-center">' +
-                                '<a href="#" class="link">Прочитать</a>' +
+                                '<a href="/library/author/{{ $authorId }}/book/' + book.id + '" class="link">Прочитать</a>' +
                                 '</div>' +
-                                '<div class="card-footer bg-white d-flex justify-content-between">' +
-                                '<button class="btn btn-primary">Изменить</button>' +
-                                '<button class="btn btn-danger">Удалить</button>' +
+                                '<div class="card-footer bg-white d-flex justify-content-between" id="bookFooter">' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>');
+                            if ({{ Auth::user()->id }} === book.author_id) {
+                                $('#bookFooter').append(
+                                    '<button class="btn btn-primary">Изменить</button>' +
+                                    '<button class="btn btn-danger">Удалить</button>'
+                                )
+                            }
                         })
                     },
                     error: function (error) {

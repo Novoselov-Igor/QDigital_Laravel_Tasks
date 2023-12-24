@@ -7,6 +7,13 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    public function index($authorId, $bookId)
+    {
+        $book = Book::find($bookId);
+
+        return view('book', compact('book'));
+    }
+
     public function show(Request $request)
     {
         $request->validate([
