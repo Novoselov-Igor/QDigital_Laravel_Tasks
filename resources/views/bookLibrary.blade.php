@@ -11,9 +11,11 @@
         </div>
         @if($authorId === '' . Auth::user()->id)
             <div>
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addBook">
-                    Добавить книгу
-                </button>
+                <div class="text-center w-100">
+                    <button type="button" class="btn btn-primary w-75" data-bs-toggle="modal" data-bs-target="#addBook">
+                        Добавить книгу
+                    </button>
+                </div>
                 <div class="modal modal-xl fade" id="addBook" data-bs-backdrop="static" data-bs-keyboard="false"
                      tabindex="-1"
                      aria-labelledby="addBookLabel" aria-hidden="true">
@@ -54,7 +56,9 @@
                                 </div>
 
                                 <div class="modal-footer">
-                                    <button type="button" data-bs-dismiss="modal" class="btn btn-primary" onclick="addBook()">Добавить</button>
+                                    <button type="button" data-bs-dismiss="modal" class="btn btn-primary"
+                                            onclick="addBook()">Добавить
+                                    </button>
                                 </div>
                             </div>
                         </div>
@@ -62,19 +66,74 @@
                 </div>
             </div>
         @endif
+        <div id="books" class="row">
+            <!-- Здесь будут отображаться книги -->
+        </div>
         <script>
+            $(window).on('load', function () {
+                clearBooks()
+                showBooks();
+            })
+
+            function showBooks() {
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ route('book.show', ['authorId' => $authorId]) }}',
+                    data: {
+                        '_token': '{{ csrf_token() }}',
+                        'authorId': {{ $authorId }}
+                    },
+                    success: function (books) {
+                        $.each(books, function (index, book) {
+                            $('#books').append(
+                                '<div class="col-lg-4 col-md-6 col-sm-8 mt-3">' +
+                                '<div class="card"">' +
+                                '<div class="card-header bg-white text-center">' +
+                                '<h4>' + book.name + '</h4>' +
+                                '</div>' +
+                                '<div class="card-body overflow-hidden" style="height: 200px;">' +
+                                '<span>' + book.text + '</span>' +
+                                '</div>' +
+                                '<div class="card-body text-center">' +
+                                '<a href="#" class="link">Прочитать</a>' +
+                                '</div>' +
+                                '<div class="card-footer bg-white d-flex justify-content-between">' +
+                                '<button class="btn btn-primary">Изменить</button>' +
+                                '<button class="btn btn-danger">Удалить</button>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>');
+                        })
+                    },
+                    error: function (error) {
+                        console.log('Ошибка', error)
+                    }
+                })
+            }
+
+            function clearBooks() {
+                $('#books').empty();
+            }
+
             function addBook() {
+                var name = $('#name');
+                var text = $('#text');
+
                 $.ajax({
                     type: 'POST',
                     url: '{{ route('book.add', ['authorId' => $authorId]) }}',
                     data: {
                         '_token': '{{ csrf_token() }}',
-                        'name': $('#name').val(),
-                        'text': $('#text').val(),
+                        'name': name.val(),
+                        'text': text.val(),
                         'authorId': {{ $authorId }}
                     },
-                    success: function (data) {
-                        console.log(data)
+                    success: function () {
+                        text.val('')
+                        name.val('')
+
+                        clearBooks()
+                        showBooks();
                     },
                     error: function (error) {
                         console.log('Ошибка', error)

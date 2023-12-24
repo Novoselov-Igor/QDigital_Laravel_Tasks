@@ -7,6 +7,16 @@ use Illuminate\Http\Request;
 
 class BookController extends Controller
 {
+    public function show(Request $request)
+    {
+        $request->validate([
+            'authorId' => 'required'
+        ]);
+
+        $books = Book::where('author_id', $request->input('authorId'))->get();
+        return response()->json($books);
+    }
+
     public function add(Request $request)
     {
         $request->validate([

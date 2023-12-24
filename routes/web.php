@@ -30,6 +30,7 @@ Route::post('/library/removeAcess', [LibraryController::class, 'removeAccess'])-
 Route::middleware('verify.library.access')->group(function () {
     Route::get('/library/author/{authorId}', [LibraryController::class, 'index'])->name('library.show');
 
+    Route::post('/library/author/{authorId}/book/show', [BookController::class, 'show'])->name('book.show');
     Route::post('/library/author/{authorId}/book/add', [BookController::class, 'add'])->name('book.add');
 });
 
